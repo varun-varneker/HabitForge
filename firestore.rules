@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Users collection - users can read/write their own data
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Guilds collection - authenticated users can read all guilds
+    match /guilds/{guildId} {
+      allow read: if request.auth != null;
+      
+      // Allow guild creation by any authenticated user
+      allow create: if request.auth != null 
+                    && request.resource.data.leaderId == request.auth.uid
+                    && request.resource.data.memberCount == 1;
+      
+      // Allow updates if user is a guild member or leader
+      allow update: if request.auth != null;
+      
+      // Allow deletion by guild leader only
+      allow delete: if request.auth != null 
+                    && request.auth.uid == resource.data.leaderId;
+      
+      // Guild messages subcollection
+      match /messages/{messageId} {
+        allow read: if request.auth != null;
+        allow create: if request.auth != null;
+      }
+    }
+    
+    // Friends collection - for friend requests and friendships
+    match /friends/{friendshipId} {
+      // Allow read for all authenticated users to query friendships
+      allow read: if request.auth != null;
+      
+      // Allow create for friend requests (user1Id is the sender)
+      allow create: if request.auth != null 
+                    && request.resource.data.user1Id == request.auth.uid
+                    && request.resource.data.status == 'pending';
+      
+      // Allow update if user is user2 (accepting request) or updating status
+      allow update: if request.auth != null 
+                    && (resource.data.user2Id == request.auth.uid 
+                    || resource.data.user1Id == request.auth.uid);
+      
+      // Allow delete if user is part of the friendship
+      allow delete: if request.auth != null 
+                    && (resource.data.user1Id == request.auth.uid 
+                    || resource.data.user2Id == request.auth.uid);
+      
+      // Private messages subcollection
+      match /messages/{messageId} {
+        // Allow read if user is part of the friendship
+        allow read: if request.auth != null;
+        
+        // Allow create if user is the sender
+        allow create: if request.auth != null 
+                      && request.resource.data.senderId == request.auth.uid;
+        
+        // Allow update for marking messages as read
+        allow update: if request.auth != null;
+      }
+    }
+  }
+}

@@ -1,0 +1,380 @@
+/* ============================================
+   MOBILE CHARACTER COMPONENT STYLES
+   ============================================ */
+
+/* Streak Hero Bar */
+.mobile-streak-hero-bar {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  padding: 1rem 1rem 0.85rem 1rem;
+  border-bottom: 3px solid #ff4757;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-streak-hero-bar::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: fireShine 3s infinite;
+}
+
+@keyframes fireShine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+.mobile-streak-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.mobile-streak-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.mobile-fire-icon {
+  font-size: 2rem;
+  animation: fireFlicker 1.5s infinite alternate;
+}
+
+@keyframes fireFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-5deg);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+    filter: brightness(1.2);
+  }
+}
+
+.mobile-streak-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-streak-bonus-tag {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #fff;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Streak Progress Bar */
+.mobile-streak-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.mobile-streak-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.mobile-streak-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.mobile-streak-milestone-text {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+/* Profile Card */
+.mobile-profile-card {
+  background: linear-gradient(135deg, #2d3561 0%, #1a1f3a 100%);
+  margin: 1.5rem 0.75rem 0.75rem 0.75rem;
+  border-radius: 15px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(108, 92, 231, 0.3);
+  position: relative;
+}
+
+.mobile-profile-top {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mobile-profile-image-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mobile-profile-image {
+  width: 140px;
+  height: 150px;
+  border-radius: 15px;
+  border: 3px solid #ffd700;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.mobile-level-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: linear-gradient(135deg, #6c5ce7 0%, #45aaf2 100%);
+  color: white;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobile-profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-username-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-username {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffd700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-class-icon {
+  font-size: 1.2rem;
+}
+
+.mobile-class-name {
+  font-size: 0.75rem;
+  color: #a8dadc;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.mobile-stat-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-stat-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mobile-stat-label {
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.mobile-progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 5px;
+  position: relative;
+}
+
+.mobile-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: progressShine 2s infinite;
+}
+
+@keyframes progressShine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.mobile-progress-fill.health {
+  background: linear-gradient(90deg, #ff6b6b 0%, #ee5a6f 100%);
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+.mobile-progress-fill.xp {
+  background: linear-gradient(90deg, #ffd93d 0%, #f6e58d 100%);
+  box-shadow: 0 0 10px rgba(255, 217, 61, 0.5);
+}
+
+.mobile-gold-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.mobile-gold-icon {
+  font-size: 1.2rem;
+}
+
+.mobile-gold-amount {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* Character Mini Sprite */
+.mobile-character-sprite {
+  text-align: center;
+  margin: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(69, 170, 242, 0.1));
+  border-radius: 15px;
+  border: 2px dashed rgba(108, 92, 231, 0.3);
+}
+
+.mobile-sprite-image {
+  width: 120px;
+  height: 120px;
+  image-rendering: pixelated;
+  animation: idleBounce 2s ease-in-out infinite;
+}
+
+@keyframes idleBounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.mobile-sprite-placeholder {
+  font-size: 4rem;
+  animation: idleBounce 2s ease-in-out infinite;
+}
+
+/* Action Buttons Row */
+.mobile-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0.75rem 0.75rem 0.75rem;
+}
+
+.mobile-action-btn {
+  flex: 1;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #6c5ce7 0%, #45aaf2 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.mobile-action-btn:active {
+  transform: scale(0.95);
+}
+
+/* Recovery Mode Banner */
+.mobile-recovery-banner {
+  margin: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(238, 90, 111, 0.2));
+  border: 2px solid #ff6b6b;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.mobile-recovery-title {
+  font-size: 0.85rem;
+  color: #ff6b6b;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.mobile-recovery-details {
+  font-size: 0.75rem;
+  color: #ffa502;
+}

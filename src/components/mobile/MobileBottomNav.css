@@ -1,0 +1,99 @@
+/* ============================================
+   MOBILE BOTTOM NAVIGATION STYLES
+   ============================================ */
+
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%);
+  border-top: 2px solid #6c5ce7;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  /* Safe area for notched phones */
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.mobile-nav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #a8dadc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  max-width: 80px;
+}
+
+.mobile-nav-btn.active {
+  color: #6c5ce7;
+}
+
+.mobile-nav-btn.active .mobile-nav-icon {
+  transform: scale(1.15);
+}
+
+.mobile-nav-icon {
+  font-size: 1.5rem;
+  position: relative;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-nav-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-nav-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.mobile-nav-btn:active {
+  transform: scale(0.9);
+}
+
+/* Ripple effect on tap */
+.mobile-nav-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(108, 92, 231, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.mobile-nav-btn:active::after {
+  width: 100px;
+  height: 100px;
+}
