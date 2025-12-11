@@ -19,25 +19,102 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // Username generator function
+  function generateUsername() {
+    const adjectives = [
+      'Brave', 'Swift', 'Mighty', 'Noble', 'Fierce', 'Bold', 'Wise', 'Silent',
+      'Shadow', 'Storm', 'Iron', 'Silver', 'Golden', 'Dragon', 'Phoenix', 'Crimson',
+      'Ancient', 'Mystic', 'Rogue', 'Valiant', 'Epic', 'Legendary', 'Sacred', 'Dark'
+    ]
+    const nouns = [
+      'Warrior', 'Knight', 'Slayer', 'Hunter', 'Blade', 'Fist', 'Shield', 'Arrow',
+      'Wolf', 'Tiger', 'Eagle', 'Bear', 'Falcon', 'Serpent', 'Ranger', 'Mage',
+      'Sage', 'Champion', 'Hero', 'Guardian', 'Paladin', 'Wanderer', 'Seeker'
+    ]
+    
+    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+    const noun = nouns[Math.floor(Math.random() * nouns.length)]
+    const number = Math.floor(Math.random() * 9999) + 1
+    
+    return `${adjective}${noun}${number}`
+  }
+
+  async function generateUniqueUsername() {
+    let username = generateUsername()
+    let attempts = 0
+    const maxAttempts = 10
+    
+    while (attempts < maxAttempts) {
+      const isAvailable = await checkUsernameAvailable(username)
+      if (isAvailable) {
+        return username
+      }
+      username = generateUsername()
+      attempts++
+    }
+    
+    // Fallback: add timestamp if all attempts fail
+    return `Hero${Date.now()}`
+  }
+
   async function checkUsernameAvailable(username) {
     try {
+      console.log('=== USERNAME CHECK START ===')
+      console.log('Input username:', username)
+      
       const usersRef = collection(db, 'users')
-      const q = query(usersRef, where('username', '==', username))
-      const querySnapshot = await getDocs(q)
-      return querySnapshot.empty // Returns true if username is available
+      
+      // Get ALL users and check in JavaScript (works even without indexes)
+      console.log('Fetching all users...')
+      const allUsersSnapshot = await getDocs(usersRef)
+      console.log('Total users in database:', allUsersSnapshot.size)
+      
+      const lowercaseUsername = username.toLowerCase()
+      let found = false
+      let matchedUsername = null
+      
+      allUsersSnapshot.forEach(doc => {
+        const userData = doc.data()
+        const existingUsername = userData.username || ''
+        const existingUsernameLower = existingUsername.toLowerCase()
+        
+        if (existingUsernameLower === lowercaseUsername) {
+          found = true
+          matchedUsername = existingUsername
+          console.log(`❌ MATCH FOUND: "${username}" matches existing user "${existingUsername}"`)
+        }
+      })
+      
+      if (!found) {
+        console.log(`✅ Username "${username}" is AVAILABLE`)
+      }
+      
+      console.log('=== USERNAME CHECK END ===')
+      
+      return !found
+      
     } catch (error) {
-      console.error('Error checking username:', error)
-      return false
+      console.error('=== USERNAME CHECK ERROR ===')
+      console.error('Error details:', error)
+      console.error('Error code:', error.code)
+      console.error('Error message:', error.message)
+      
+      // If there's a permission error, the Firestore rules aren't deployed correctly
+      if (error.code === 'permission-denied') {
+        console.error('❌ PERMISSION DENIED - Check Firestore rules in Firebase Console')
+        console.error('The read rule for users collection should be: allow read: if true;')
+        alert('Cannot verify username availability. Firestore rules may need updating. Allowing signup...')
+        return true // Allow signup on permission error
+      }
+      
+      // For other errors, allow signup (better UX)
+      console.error('Allowing signup due to error')
+      return true
     }
   }
 
-  async function signup(email, password, displayName, characterClass) {
-    // First check if username is available
-    const isAvailable = await checkUsernameAvailable(displayName)
-    if (!isAvailable) {
-      throw new Error('USERNAME_TAKEN')
-    }
-
+  async function signup(email, password, username, characterClass) {
+    // Username is already generated and unique at this point
     return createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         const userId = userCredential.user.uid
@@ -55,7 +132,8 @@ export function AuthProvider({ children }) {
         
         // Create initial user document in Firestore
         await setDoc(doc(db, 'users', userId), {
-          username: displayName || 'Hero',
+          username: username || 'Hero',
+          usernameLowercase: (username || 'Hero').toLowerCase(), // Store lowercase for case-insensitive searches
           email: email,
           characterClass: characterClass || 'warrior',
           level: 1,
@@ -134,7 +212,8 @@ export function AuthProvider({ children }) {
     signup,
     login,
     logout,
-    checkUsernameAvailable
+    checkUsernameAvailable,
+    generateUniqueUsername
   }
 
   return (

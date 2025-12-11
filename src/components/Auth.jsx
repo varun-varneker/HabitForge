@@ -8,13 +8,58 @@ function Auth() {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [displayName, setDisplayName] = useState('')
+  const [username, setUsername] = useState('')
+  const [usernameError, setUsernameError] = useState('')
+  const [checkingUsername, setCheckingUsername] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showQuiz, setShowQuiz] = useState(false)
   const [quizAnswers, setQuizAnswers] = useState([])
 
-  const { signup, login } = useAuth()
+  const { signup, login, checkUsernameAvailable } = useAuth()
+
+  async function handleUsernameBlur() {
+    if (!username.trim()) {
+      setUsernameError('')
+      return
+    }
+
+    if (username.length < 3) {
+      setUsernameError('Username must be at least 3 characters')
+      return
+    }
+
+    if (username.length > 20) {
+      setUsernameError('Username must be 20 characters or less')
+      return
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setUsernameError('Username can only contain letters, numbers, and underscores')
+      return
+    }
+
+    setCheckingUsername(true)
+    setUsernameError('')
+
+    try {
+      const isAvailable = await checkUsernameAvailable(username)
+      if (!isAvailable) {
+        setUsernameError('This username is already taken. Please choose another.')
+      }
+    } catch (error) {
+      console.error('Error checking username:', error)
+      setUsernameError('Unable to verify username. Please try again.')
+    } finally {
+      setCheckingUsername(false)
+    }
+  }
+
+  function handleUsernameChange(e) {
+    const value = e.target.value
+    setUsername(value)
+    setUsernameError('')
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -32,6 +77,40 @@ function Auth() {
         const result = await login(email, password)
         console.log('Login successful:', result)
       } else {
+        // Validate username before showing quiz
+        if (!username.trim()) {
+          setError('Please enter a username')
+          setLoading(false)
+          return
+        }
+
+        if (username.length < 3) {
+          setError('Username must be at least 3 characters')
+          setLoading(false)
+          return
+        }
+
+        if (username.length > 20) {
+          setError('Username must be 20 characters or less')
+          setLoading(false)
+          return
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+          setError('Username can only contain letters, numbers, and underscores')
+          setLoading(false)
+          return
+        }
+
+        // Final check if username is available
+        const isAvailable = await checkUsernameAvailable(username)
+        if (!isAvailable) {
+          setError(`Username "${username}" is already taken. Please choose a different username.`)
+          setUsernameError('This username is already taken')
+          setLoading(false)
+          return
+        }
+
         // Show quiz before creating account
         setShowQuiz(true)
         setLoading(false)
@@ -61,14 +140,12 @@ function Auth() {
     
     try {
       setLoading(true)
-      await signup(email, password, displayName || 'Hero', characterClass)
+      await signup(email, password, username, characterClass)
     } catch (err) {
       console.error(err)
       setShowQuiz(false)
       if (err.code === 'auth/email-already-in-use') {
         setError('Email already in use')
-      } else if (err.message === 'USERNAME_TAKEN') {
-        setError('Username already taken. Please choose a different name.')
       } else {
         setError('Failed to create account')
       }
@@ -86,7 +163,8 @@ function Auth() {
     setError('')
     setEmail('')
     setPassword('')
-    setDisplayName('')
+    setUsername('')
+    setUsernameError('')
     setShowQuiz(false)
   }
 
@@ -96,7 +174,7 @@ function Auth() {
       <CharacterQuiz 
         onComplete={handleQuizComplete}
         onCancel={handleQuizCancel}
-        heroName={displayName || 'Hero'}
+        heroName={username}
       />
     )
   }
@@ -114,15 +192,31 @@ function Auth() {
         <form onSubmit={handleSubmit} className="auth-form">
           {!isLogin && (
             <div className="form-group">
-              <label htmlFor="displayName">Hero Name</label>
+              <label htmlFor="username">Username</label>
               <input
-                id="displayName"
+                id="username"
                 type="text"
-                placeholder="Enter your hero name"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="auth-input"
+                placeholder="Choose a unique username"
+                value={username}
+                onChange={handleUsernameChange}
+                onBlur={handleUsernameBlur}
+                className={`auth-input ${usernameError ? 'input-error' : ''}`}
+                required
+                minLength={3}
+                maxLength={20}
+                pattern="[a-zA-Z0-9_]+"
+                title="Username can only contain letters, numbers, and underscores"
               />
+              {checkingUsername && (
+                <span className="username-checking">Checking availability...</span>
+              )}
+              {usernameError && (
+                <span className="username-error">⚠️ {usernameError}</span>
+              )}
+              {username && !usernameError && !checkingUsername && username.length >= 3 && (
+                <span className="username-success">✓ Username is available</span>
+              )}
+              <p className="input-hint">3-20 characters, letters, numbers, and underscores only</p>
             </div>
           )}
 

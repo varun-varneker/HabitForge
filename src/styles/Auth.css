@@ -65,6 +65,47 @@
   font-size: 1rem;
 }
 
+.input-hint {
+  color: #a8dadc;
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0 0;
+  font-style: italic;
+}
+
+.username-checking {
+  color: #ffd700;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  display: block;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.username-error {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  display: block;
+  font-weight: 600;
+}
+
+.username-success {
+  color: #06ffa5;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  display: block;
+  font-weight: 600;
+}
+
+.input-error {
+  border-color: #ff6b6b !important;
+  background: rgba(255, 107, 107, 0.1) !important;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 .auth-input {
   padding: 1rem;
   border: 2px solid #4a5568;

@@ -213,11 +213,17 @@ function App() {
           setInventory(userData.inventory || createInventory())
           
         } else {
-          console.log('No Firestore data - new user')
-          // New user - data will be created on first action
+          console.log('⚠️ No Firestore document found for authenticated user')
+          // User has Firebase Auth account but no Firestore data
+          // This happens if the Firestore document was deleted
+          alert('Your account data is missing. Please contact support or create a new account.')
+          handleLogout()
+          return
         }
       } catch (error) {
         console.error('Error loading user data:', error)
+        alert('Failed to load your account data. Please try logging in again.')
+        handleLogout()
       } finally {
         setDataLoaded(true)
       }
